@@ -6,8 +6,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE raylib)
 
 # Set the location of the pre-compiled library and include directory
 set_target_properties(raylib PROPERTIES
-        IMPORTED_LOCATION "lib/raylib.a"
-        INTERFACE_INCLUDE_DIRECTORIES "include"
+        IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/lib/raylib.a"
+        INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
 # Link raylib and necessary frameworks on macOS
