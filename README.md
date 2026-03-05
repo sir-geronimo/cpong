@@ -1,5 +1,7 @@
 # CPong
 
+<img width="832" height="624" alt="preview" src="https://github.com/user-attachments/assets/068853a4-dfc2-4897-8a3b-9f054fab56f6" />
+
 A simple implementation of the classic game Pong in C++, built using the [raylib](https://www.raylib.com/) library.
 
 ## Features
