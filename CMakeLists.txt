@@ -13,16 +13,27 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Create executable target
-add_executable(${CMAKE_PROJECT_NAME}
-        src/main.cpp
+# Set source files
+set(SOURCE_FILES src/main.cpp
         src/game.cpp
         src/entities/ball.cpp
         src/entities/paddle.cpp
         src/entities/cpu_paddle.cpp
 )
 
-include_directories(src/include)
+# Create executable target
+add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
+
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE src/include)
 
 # Add subdirectories for dependencies
-add_subdirectory(vendor)
+add_subdirectory(dependencies)
+
+# Add platform-specific link libraries for macOS
+if (APPLE)
+    link_libraries(${CMAKE_PROJECT_NAME}
+            "-framework IOKit"
+            "-framework Cocoa"
+            "-framework OpenGL"
+    )
+endif ()

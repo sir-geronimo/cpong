@@ -1,6 +1,7 @@
 //
 // Created by Enger Jiménez on 19/2/26.
 //
+#include <iostream>
 #include <string>
 
 #include "raylib.h"
@@ -11,16 +12,17 @@
 #include "paddle.h"
 
 Game::Game()
-    : score({{"player", 0}, {"cpu", 0}})
-      , ball(Vector2{HALF_WIDTH, HALF_HEIGHT})
-      , cpuPaddle(CpuPaddle())
-      , playerPaddle(Paddle()) {
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rey Pong");
+    : m_score({{"player", 0}, {"cpu", 0}})
+      , m_ball(Vector2{HALF_WIDTH, HALF_HEIGHT})
+      , m_cpuPaddle(CpuPaddle(m_ball))
+      , m_playerPaddle(Paddle()) {
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "[Rey Pong] - by Enger Jiménez");
     SetTargetFPS(120);
     SetExitKey(0);
 }
 
 Game::~Game() {
+    std::cout << "[GAME] Exiting Game" << std::endl;
     CloseWindow();
 }
 
@@ -31,14 +33,14 @@ void Game::Run() {
         // =================
         // Check score
         // =================
-        if (ball.position.x + Ball::RADIUS >= SCREEN_WIDTH) {
-            score["player"] += 1;
-            ball.reset();
+        if (m_ball.m_position.x + Ball::RADIUS >= SCREEN_WIDTH) {
+            m_score["player"] += 1;
+            m_ball.reset();
         }
 
-        if (ball.position.x - Ball::RADIUS <= 0) {
-            score["cpu"] += 1;
-            ball.reset();
+        if (m_ball.m_position.x - Ball::RADIUS <= 0) {
+            m_score["cpu"] += 1;
+            m_ball.reset();
         }
 
         bounceBall();
@@ -49,9 +51,9 @@ void Game::Run() {
 }
 
 void Game::update(const float delta) {
-    ball.update(delta);
-    cpuPaddle.update(delta, ball);
-    playerPaddle.update(delta);
+    m_ball.update(delta);
+    m_cpuPaddle.update(delta);
+    m_playerPaddle.update(delta);
 }
 
 void Game::draw() const {
@@ -62,8 +64,8 @@ void Game::draw() const {
     // =================
     // Draw Score
     // =================
-    const auto playerScore = "Player Score: " + std::to_string(score.at("player"));
-    const auto cpuScore = "CPU Score: " + std::to_string(score.at("cpu"));
+    const auto playerScore = "Player Score: " + std::to_string(m_score.at("player"));
+    const auto cpuScore = "CPU Score: " + std::to_string(m_score.at("cpu"));
 
     DrawText(
         playerScore.c_str(),
@@ -84,38 +86,42 @@ void Game::draw() const {
     );
     DrawCircleLinesV(
         Vector2{HALF_WIDTH, HALF_HEIGHT},
-        60,
+        Ball::RADIUS * 6, // Court circle radius
         RAYWHITE
     );
 
     // =================
     // Draw Entities
     // =================
-    ball.draw();
-    cpuPaddle.draw();
-    playerPaddle.draw();
+    m_ball.draw();
+    m_cpuPaddle.draw();
+    m_playerPaddle.draw();
 
     EndDrawing();
 }
 
 void Game::bounceBall() {
-    if (Ball::collided(
-        ball,
-        Rectangle{
-            cpuPaddle.position.x, cpuPaddle.position.y,
-            cpuPaddle.size.x, cpuPaddle.size.y
-        }
-    )) {
-        ball.m_velocity.x *= -1;
-    }
+    // TODO: Refactor this method to avoid code duplication.
+    // It is possible to have a list of collidable entities and check for collisions in a loop.
 
-    if (Ball::collided(
-        ball,
+    const auto collidedWithCpu = Ball::collided(
+        m_ball,
         Rectangle{
-            playerPaddle.position.x, playerPaddle.position.y,
-            playerPaddle.size.x, playerPaddle.size.y
-        }
-    )) {
-        ball.m_velocity.x *= -1;
+            m_cpuPaddle.m_position.x,
+            m_cpuPaddle.m_position.y,
+            m_cpuPaddle.m_size.x,
+            m_cpuPaddle.m_size.y,
+        });
+    const auto collidedWithPlayer = Ball::collided(
+        m_ball,
+        Rectangle{
+            m_playerPaddle.m_position.x,
+            m_playerPaddle.m_position.y,
+            m_playerPaddle.m_size.x,
+            m_playerPaddle.m_size.y,
+        });
+
+    if (collidedWithCpu || collidedWithPlayer) {
+        m_ball.m_velocity.x *= -1;
     }
 }

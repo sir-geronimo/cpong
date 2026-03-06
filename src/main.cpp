@@ -1,6 +1,7 @@
 #include "game.h"
 
-int main() {
+int main()
+{
     auto game = Game();
     game.Run();
 }

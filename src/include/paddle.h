@@ -7,11 +7,13 @@
 
 #include "raylib.h"
 
+#include "ball.h"
 #include "constants.h"
+#include "object.h"
 
 class Ball;
 
-class Paddle {
+class Paddle : public Object {
 protected:
     static constexpr float SPEED = 100.0f;
     static constexpr float MAX_SPEED = 200.0f;
@@ -20,29 +22,31 @@ protected:
     void move(float delta);
 
 public:
-    virtual ~Paddle() = default;
+    ~Paddle() override = default;
 
-    Vector2 position{};
-    Vector2 velocity{};
-    Vector2 size{PADDLE_SIZE_X, PADDLE_SIZE_Y};
+    Vector2 m_position{};
+    Vector2 m_velocity{};
+    Vector2 m_size{PADDLE_SIZE_X, PADDLE_SIZE_Y};
 
     explicit Paddle();
 
     explicit Paddle(const Vector2 &position);
 
-    virtual void update(float delta);
+    void update(float delta) override;
 
-    void draw() const;
+    void draw() const override;
 };
 
 class CpuPaddle : public Paddle {
+    const Ball &m_ball;
+
 public:
-    explicit CpuPaddle();
+    explicit CpuPaddle(const Ball &ball);
 
-    explicit CpuPaddle(const Vector2 &position);
+    explicit CpuPaddle(const Ball &ball, const Vector2 &position);
 
-    void update(float delta, const Ball &ball);
+    void update(float delta) override;
 
 private:
-    void calculateBallPos(const Ball &ball);
+    void calculateBallPos();
 };

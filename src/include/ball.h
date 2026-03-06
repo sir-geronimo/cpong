@@ -5,20 +5,22 @@
 
 #include "raylib.h"
 
-class Ball {
+#include "object.h"
+
+class Ball : public Object {
 public:
     static constexpr float RADIUS = 10.0f;
     static constexpr float SPEED = 200.0f;
 
-    Vector2 initialPosition{};
-    Vector2 position{};
+    Vector2 m_initialPosition{};
+    Vector2 m_position{};
     Vector2 m_velocity{SPEED, SPEED};
 
     explicit Ball(const Vector2 &initialPos);
 
-    void update(float delta);
+    void update(float delta) override;
 
-    void draw() const;
+    void draw() const override;
 
     void reset();
 

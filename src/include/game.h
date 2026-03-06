@@ -9,10 +9,10 @@
 #include "paddle.h"
 
 class Game {
-    std::unordered_map<std::string, int> score;
-    Ball ball;
-    CpuPaddle cpuPaddle;
-    Paddle playerPaddle;
+    std::unordered_map<std::string, int> m_score;
+    Ball m_ball;
+    CpuPaddle m_cpuPaddle;
+    Paddle m_playerPaddle;
 
 public:
     explicit Game();

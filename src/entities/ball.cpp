@@ -8,27 +8,27 @@
 #include "constants.h"
 
 Ball::Ball(const Vector2 &initialPos)
-    : initialPosition(initialPos)
-      , position(initialPos) {
+    : m_initialPosition(initialPos)
+      , m_position(initialPos) {
     reset();
 }
 
 void Ball::update(const float delta) {
-    if (position.y - RADIUS <= 0 || position.y + RADIUS >= SCREEN_HEIGHT) {
+    if (m_position.y - RADIUS <= 0 || m_position.y + RADIUS >= SCREEN_HEIGHT) {
         m_velocity.y *= -1;
     }
 
-    position.x += m_velocity.x * delta;
-    position.y += m_velocity.y * delta;
+    m_position.x += m_velocity.x * delta;
+    m_position.y += m_velocity.y * delta;
 }
 
 void Ball::draw() const {
-    DrawCircleV(position, RADIUS, RAYWHITE);
+    DrawCircleV(m_position, RADIUS, RAYWHITE);
 }
 
 void Ball::reset() {
     // Restart position to initial position
-    position = initialPosition;
+    m_position = m_initialPosition;
 
     // Set a random angle between -45 and 45 degrees
     auto angle = static_cast<float>(GetRandomValue(-45, 45));
@@ -42,12 +42,12 @@ void Ball::reset() {
 }
 
 bool Ball::collided(const Ball &ball, const Rectangle &rec) {
-    if (rec.x > ball.position.x + 100 || rec.x < ball.position.x - 100) {
+    if (rec.x > ball.m_position.x + 100 || rec.x < ball.m_position.x - 100) {
         return false;
     }
 
     return CheckCollisionCircleRec(
-        ball.position,
+        ball.m_position,
         RADIUS,
         rec
     );

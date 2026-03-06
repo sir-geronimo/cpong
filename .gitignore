@@ -76,6 +76,7 @@
 # *.ipr
 
 # CMake
+.cache/
 cmake-build-*/
 build/
 
