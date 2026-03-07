@@ -87,6 +87,7 @@ build/
 *.iws
 
 # IntelliJ
+.vs/
 out/
 
 # mpeltonen/sbt-idea plugin
